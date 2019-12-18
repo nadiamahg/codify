@@ -17,9 +17,7 @@ const { errors, isValid } = classValidateNewClassInput(req.body);
     return res.status(400).json(errors);
   }
 Classroom.findOne({ class_name: req.body.class_name }).then(classroom => {
-    if (classroom) {
-      return res.status(400).json({ class_name: "Class name already exists" });
-    } else {
+     
       const newClassroom = new Classroom({
         class_name: req.body.class_name,
         class_code: req.body.class_code,
@@ -29,7 +27,7 @@ Classroom.findOne({ class_name: req.body.class_name }).then(classroom => {
             .save()
             .then(classroom => res.json(classroom))
             .catch(classroom => console.log(classroom));
-    }
+    
   });
 });
 
