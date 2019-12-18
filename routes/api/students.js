@@ -79,7 +79,8 @@ const username = req.body.username;
         // Create JWT Payload
         const payload = {
           id: student.id,
-          name: student.name
+          first_name: student.first_name,
+          surname: student.surname
         };
 // Sign token
         jwt.sign(
