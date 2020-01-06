@@ -6,8 +6,6 @@ const classValidateNewClassInput = require("../../validation/newClassroom");
 
 const Classroom = require("../../models/Classroom");
 
-const ClassCtrl = require('../../controllers/class_ctrl')
-
 // @route POST api/class/newClass
 // @desc Register class
 // @access Public
@@ -32,8 +30,5 @@ Classroom.findOne({ class_name: req.body.class_name }).then(classroom => {
     
   });
 });
-
-router.get('/classes/:teacher_username', ClassCtrl.getClasses);
-
 
 module.exports = router;
