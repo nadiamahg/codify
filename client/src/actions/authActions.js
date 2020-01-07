@@ -19,7 +19,7 @@ export const registerUser = (userData, history) => dispatch => {
     );
 };
 
-export const addClass = (userData, history) => dispatch => {
+export const newClassroom = (userData, history) => dispatch => {
   axios
     .post("/api/classrooms/newclassroom", userData)
     .catch(err =>

@@ -14,12 +14,12 @@ const Teacher = require("../../models/Teacher");
 // @access Public
 router.post("/register", (req, res) => {
   // Form validation
-const { errors, isValid } = teacherValidateRegisterInput(req.body);
-// Check validation
+  const { errors, isValid } = teacherValidateRegisterInput(req.body);
+  // Check validation
   if (!isValid) {
     return res.status(400).json(errors);
   }
-Teacher.findOne({ username: req.body.username }).then(teacher => {
+  Teacher.findOne({ username: req.body.username }).then(teacher => {
     if (teacher) {
       return res.status(400).json({ username: "username already exists" });
     } else {
@@ -29,7 +29,7 @@ Teacher.findOne({ username: req.body.username }).then(teacher => {
         username: req.body.username,
         password: req.body.password
       });
-// Hash password before saving in database
+      // Hash password before saving in database
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(newTeacher.password, salt, (err, hash) => {
           if (err) throw err;
@@ -56,13 +56,13 @@ router.post("/login", (req, res) => {
   }
   const username = req.body.username;
   const password = req.body.password;
-// Find user by username
+  // Find user by username
   Teacher.findOne({ username }).then(teacher => {
     // Check if user exists
     if (!teacher) {
       return res.status(404).json({ usernamenotfound: "Username not found" });
     }
-// Check password
+    // Check password
     bcrypt.compare(password, teacher.password).then(isMatch => {
       if (isMatch) {
         // User matched
@@ -73,11 +73,10 @@ router.post("/login", (req, res) => {
           surname: teacher.surname,
           username: teacher.username
         };
-// Sign token
+        // Sign token
         jwt.sign(
           payload,
-          keys.secretOrKey,
-          {
+          keys.secretOrKey, {
             expiresIn: 31556926 // 1 year in seconds
           },
           (err, token) => {

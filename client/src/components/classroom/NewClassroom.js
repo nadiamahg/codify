@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { addClass } from "../../actions/authActions";
+import { newClassroom } from "../../actions/authActions";
 import classnames from "classnames";
-class AddClass extends Component {
+class NewClassroom extends Component {
   constructor() {
     super();
     this.state = {
@@ -15,7 +15,8 @@ class AddClass extends Component {
   }
 
   onChange = e => {
-    this.setState({ [e.target.id]: e.target.value });
+    this.setState({
+      [e.target.id]: e.target.value });
   };
   onSubmit = e => {
     e.preventDefault();
@@ -23,7 +24,7 @@ class AddClass extends Component {
       class_name: this.state.class_name,
       teacher_username: this.props.auth.user.username
     };
-    this.props.addClass(userData); // since we handle the redirect within our component, we don't need to pass in this.props.history as a parameter
+    this.props.newClassroom(userData); // since we handle the redirect within our component, we don't need to pass in this.props.history as a parameter
     this.props.history.push("/dashboard");
   };
   render() {
@@ -79,8 +80,8 @@ class AddClass extends Component {
     );
   }
 }
-AddClass.propTypes = {
-  addClass: PropTypes.func.isRequired,
+NewClassroom.propTypes = {
+  newClassroom: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
@@ -89,6 +90,5 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 export default connect(
-  mapStateToProps,
-  { addClass }
-)(AddClass);
+  mapStateToProps, { newClassroom }
+)(NewClassroom);

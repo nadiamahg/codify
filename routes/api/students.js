@@ -14,20 +14,19 @@ const Classroom = require("../../models/Classroom");
 // @access Public
 router.post("/register", (req, res) => {
   // Form validation
-const { errors, isValid } = studentValidateRegisterInput(req.body);
-// Check validation
+  const { errors, isValid } = studentValidateRegisterInput(req.body);
+  // Check validation
   if (!isValid) {
     return res.status(400).json(errors);
   }
-Classroom.findOne({ class_code: req.body.class_code }).then(student => {
+  Classroom.findOne({ class_code: req.body.class_code }).then(student => {
     if (!student) {
       return res.status(400).json({ classcodenotfound: "Class code not found" });
     } else {
       Student.findOne({ username: req.body.username }).then(student => {
         if (student) {
           return res.status(400).json({ username: "Username is taken" });
-        }
-        else {
+        } else {
           const newStudent = new Student({
             first_name: req.body.first_name,
             surname: req.body.surname,
@@ -35,7 +34,7 @@ Classroom.findOne({ class_code: req.body.class_code }).then(student => {
             class_code: req.body.class_code,
             password: req.body.password
           });
-    // Hash password before saving in database
+          // Hash password before saving in database
           bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(newStudent.password, salt, (err, hash) => {
               if (err) throw err;
@@ -49,7 +48,7 @@ Classroom.findOne({ class_code: req.body.class_code }).then(student => {
         }
       });
     }
-  }); 
+  });
 
 
 });
@@ -59,20 +58,20 @@ Classroom.findOne({ class_code: req.body.class_code }).then(student => {
 // @access Public
 router.post("/login", (req, res) => {
   // Form validation
-const { errors, isValid } = studentValidateLoginInput(req.body);
-// Check validation
+  const { errors, isValid } = studentValidateLoginInput(req.body);
+  // Check validation
   if (!isValid) {
     return res.status(400).json(errors);
   }
-const username = req.body.username;
+  const username = req.body.username;
   const password = req.body.password;
-// Find student by username
+  // Find student by username
   Student.findOne({ username }).then(student => {
     // Check if student exists
     if (!student) {
       return res.status(404).json({ usernamenotfound: "Usename not found" });
     }
-// Check password
+    // Check password
     bcrypt.compare(password, student.password).then(isMatch => {
       if (isMatch) {
         // User matched
@@ -82,11 +81,10 @@ const username = req.body.username;
           first_name: student.first_name,
           surname: student.surname
         };
-// Sign token
+        // Sign token
         jwt.sign(
           payload,
-          keys.secretOrKey,
-          {
+          keys.secretOrKey, {
             expiresIn: 31556926 // 1 year in seconds
           },
           (err, token) => {

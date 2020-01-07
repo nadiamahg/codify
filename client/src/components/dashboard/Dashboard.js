@@ -9,13 +9,13 @@ class Dashboard extends Component {
     e.preventDefault();
     this.props.logoutUser();
   };
-render() {
+  render() {
     const { user } = this.props.auth;
-return (
-      
-        
+    return (
 
-        <div style={{ height: "75vh" }} className="container valign-wrapper">
+
+
+      <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
           <div className="col s12 center-align">
             <h4>
@@ -27,7 +27,7 @@ return (
             </h4>
             
             <Link
-                to="/addClass"
+                to="/newClassroom"
                 style={{
                   width: "150px",
                   borderRadius: "3px",
@@ -36,7 +36,7 @@ return (
                 }}
                 className="btn btn-large waves-effect waves-light hoverable blue accent-3"
               >
-                Add Class
+                New Classroom
               </Link>
               
             
@@ -55,9 +55,9 @@ return (
           </div>
         </div>
       </div>
-        
-     
-      
+
+
+
     );
   }
 }
@@ -69,6 +69,5 @@ const mapStateToProps = state => ({
   auth: state.auth
 });
 export default connect(
-  mapStateToProps,
-  { logoutUser }
+  mapStateToProps, { logoutUser }
 )(Dashboard);
