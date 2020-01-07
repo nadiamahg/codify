@@ -3,18 +3,36 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import { Link } from "react-router-dom";
+import { getClassrooms } from "../../api/classroomApi"
 
 class Dashboard extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      classrooms: [],
+    }
+  };
+
+  componentDidMount = async () => {
+    this.setState({ isLoading: true })
+
+    await getClassrooms(this.props.auth.user.username).then(classrooms => {
+      this.setState({
+        classrooms: classrooms.data.data
+      })
+    })
+  };
+
   onLogoutClick = e => {
     e.preventDefault();
     this.props.logoutUser();
   };
+
   render() {
     const { user } = this.props.auth;
+    const { classrooms } = this.state;
     return (
-
-
-
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
           <div className="col s12 center-align">
@@ -25,7 +43,19 @@ class Dashboard extends Component {
                 <span style={{ fontFamily: "monospace" }}>MERN</span> app 👏
               </p>
             </h4>
-            
+            <div>
+            classnames:
+                {
+                  classrooms.map((classroom, i) => {
+                    return (
+                      <div key={i}>
+                        {classroom.class_name}
+
+                      </div>
+                    );
+                  })
+                } 
+            </div>
             <Link
                 to="/newClassroom"
                 style={{

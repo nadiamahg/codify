@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { newClassroom } from "../../actions/authActions";
+import { newClassroom } from "../../api/classroomApi";
 import classnames from "classnames";
+
 class NewClassroom extends Component {
   constructor() {
     super();
