@@ -11,15 +11,19 @@ newClassroom = (req, res) => {
     return res.status(400).json(errors);
   }
   Classroom.findOne({ class_name: req.body.class_name }).then(classroom => {
-    const newClassroom = new Classroom({
-      class_name: req.body.class_name,
-      class_code: req.body.class_code,
-      teacher_username: req.body.teacher_username,
-    });
-    newClassroom
-      .save()
-      .then(classroom => res.json(classroom))
-      .catch(classroom => console.log(classroom));
+    if (classroom) {
+      return res.status(400).json({ class_name: "classroom name already exists" });
+    } else {
+      const newClassroom = new Classroom({
+        class_name: req.body.class_name,
+        class_code: req.body.class_code,
+        teacher_username: req.body.teacher_username,
+      });
+      newClassroom
+        .save()
+        .then(classroom => res.json(classroom))
+        .catch(classroom => console.log(classroom));
+    }
   });
 };
 

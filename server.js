@@ -5,6 +5,7 @@ const passport = require("passport");
 const teachers = require("./routes/api/teachers");
 const students = require("./routes/api/students");
 const classrooms = require("./routes/api/classrooms");
+const assignments = require("./routes/api/assignments");
 const app = express();
 // Bodyparser middleware
 app.use(
@@ -32,5 +33,6 @@ require("./config/studentPassport")(passport);
 app.use("/api/teachers", teachers);
 app.use("/api/students", students);
 app.use("/api/classrooms", classrooms);
+app.use("/api/assignments", assignments);
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server up and running on port ${port} !`));

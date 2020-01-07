@@ -9,7 +9,7 @@ const classroomApi = axios.create({
 
 export const newClassroom = (userData, history) => dispatch => {
   axios
-    .post("/classrooms/newclassroom", userData)
+    .post("/api/classrooms/newClassroom", userData)
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
