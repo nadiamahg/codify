@@ -2,14 +2,18 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { newClassroom } from "../../api/classroomApi";
+import { newAssignment } from "../../api/assignmentApi";
 import classnames from "classnames";
 
-class NewClassroom extends Component {
+class NewAssignment extends Component {
   constructor() {
     super();
     this.state = {
-      class_name: "",
+      assignment_name: "",
+      assignment_question: "",
+      assignment_solution: "",
+      assignment_compiled_solution: "",
+      assignment_due_date: "",
       teacher_username: "",
       errors: {}
     };
@@ -22,11 +26,14 @@ class NewClassroom extends Component {
   onSubmit = e => {
     e.preventDefault();
     const userData = {
-      class_name: this.state.class_name,
-      class_code: (Math.random()+1).toString(36).substring(2),
+      assignment_name: this.state.assignment_name,
+      assignment_question: this.state.assignment_question,
+      assignment_solution: this.state.assignment_solution,
+      assignment_compiled_solution: this.state.assignment_compiled_solution,
+      assignment_due_date: this.state.assignment_due_date,
       teacher_username: this.props.auth.user.username
     };
-    this.props.newClassroom(userData); // since we handle the redirect within our component, we don't need to pass in this.props.history as a parameter
+    this.props.newAssignment(userData); // since we handle the redirect within our component, we don't need to pass in this.props.history as a parameter
     this.props.history.push("/dashboard");
   };
   render() {
@@ -41,22 +48,22 @@ class NewClassroom extends Component {
             </Link>
             <div className="col s12" style={{ paddingLeft: "11.250px" }}>
               <h4>
-                <b>Add Class</b> below
+                <b>Add Assignment</b> below
               </h4>
             </div>
             <form noValidate onSubmit={this.onSubmit}>
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}
-                  value={this.state.class_name}
-                  error={errors.class_name}
-                  id="class_name"
+                  value={this.state.assignment_name}
+                  error={errors.assignment_name}
+                  id="assignment_name"
                   type="text"
                   className={classnames("", {
-                    invalid: errors.class_name || errors.classnamenotfound
+                    invalid: errors.assignment_name || errors.classnamenotfound
                   })}
                 />
-                <label htmlFor="class_name">Class Name</label>
+                <label htmlFor="assignment_name">Assignment Name</label>
                 <span className="red-text">
                   {errors.classnamenotfound}
                 </span>
@@ -72,7 +79,7 @@ class NewClassroom extends Component {
                   type="submit"
                   className="btn btn-large waves-effect waves-light hoverable blue accent-3"
                 >
-                  Add Class
+                  Add Assignment
                 </button>
               </div>
             </form>
@@ -82,8 +89,8 @@ class NewClassroom extends Component {
     );
   }
 }
-NewClassroom.propTypes = {
-  newClassroom: PropTypes.func.isRequired,
+NewAssignment.propTypes = {
+  newAssignment: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
@@ -92,5 +99,5 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 export default connect(
-  mapStateToProps, { newClassroom }
-)(NewClassroom);
+  mapStateToProps, { newAssignment }
+)(NewAssignment);

@@ -3,7 +3,26 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import { Link } from "react-router-dom";
-import { getClassrooms } from "../../api/classroomApi"
+import { getClassrooms, deleteClassroom } from "../../api/classroomApi"
+
+class DeleteClassroom extends Component {
+    deleteUser = event => {
+        event.preventDefault()
+
+        if (
+            window.confirm(
+                `Do you want to delete the class ${this.props.class_name} permanently?`,
+            )
+        ) {
+            deleteClassroom(this.props.class_name, this.props.class_code)
+            window.location.reload()
+        }
+    }
+
+    render() {
+        return <button onClick={this.deleteUser}>Delete</button>
+    }
+}
 
 class Dashboard extends Component {
 
@@ -43,19 +62,36 @@ class Dashboard extends Component {
                 <span style={{ fontFamily: "monospace" }}>MERN</span> app 👏
               </p>
             </h4>
-            <div>
-            classnames:
+            <table className="striped">
+              <thead>
+                <tr>
+                  <th>Class Name</th>
+                  <th>Class Code</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
                 {
                   classrooms.map((classroom, i) => {
                     return (
-                      <div key={i}>
-                        {classroom.class_name}
+                      <tr key={i}>
+                        <td>
+                          {classroom.class_name}
+                        </td>
+                        <td>
+                          {classroom.class_code}
+                        </td>
+                        <td>
 
-                      </div>
+                            <DeleteClassroom class_name={classroom.class_name} class_code={classroom.class_code}/>
+                        
+                        </td>
+                      </tr>
                     );
                   })
                 } 
-            </div>
+              </tbody>
+            </table>
             <Link
                 to="/newClassroom"
                 style={{
@@ -68,7 +104,18 @@ class Dashboard extends Component {
               >
                 New Classroom
               </Link>
-              
+              <Link
+                to="/newAssignment"
+                style={{
+                  width: "150px",
+                  borderRadius: "3px",
+                  letterSpacing: "1.5px",
+                  marginTop: "1rem"
+                }}
+                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+              >
+                New Assignment
+              </Link>
             
             <button
               style={{
