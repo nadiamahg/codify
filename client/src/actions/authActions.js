@@ -19,18 +19,6 @@ export const registerUser = (userData, history) => dispatch => {
     );
 };
 
-export const newClassroom = (userData, history) => dispatch => {
-  axios
-    .post("/api/classrooms/newclassroom", userData)
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-      })
-    );
-};
-
-
 // Login - get user token
 export const loginUser = userData => dispatch => {
   axios
