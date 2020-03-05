@@ -1,4 +1,5 @@
 const Classroom = require('../models/Classroom');
+const Student = require('../models/Student');
 const classValidateNewClassInput = require("../validation/newClassroom");
 const keys = require("../config/keys");
 
@@ -41,7 +42,64 @@ getClassrooms = async (req, res) => {
   }).catch(err => console.log(err))
 };
 
+getClassroom = async (req, res) => {
+  await Classroom.findOne({ class_name: req.params.class_name }, (err, classroom) => {
+    if (err) {
+      return res.status(400).json({ success: false, error: err })
+    }
+    if (!classroom) {
+      return res
+        .status(404)
+        .json({ success: false, error: `Class not found` })
+    }
+    return res.status(200).json({ success: true, data: classroom })
+  }).catch(err => console.log(err))
+};
+
+getStudents = async (req, res) => {
+  await Classroom.findOne({ class_name: req.params.class_name }, (err, classroom) => {
+    if (err) {
+      return res.status(400).json({ success: false, error: err })
+    }
+    if (!classroom) {
+      return res
+        .status(404)
+        .json({ success: false, error: `Class not found` })
+    }
+    Student.find({ class_code: classroom.class_code }, (err, students) => {
+      if (err) {
+        return res.status(400).json({ success: false, error: err })
+      }
+      if (!students) {
+        return res
+          .status(404)
+          .json({ success: false, error: `Students not found` })
+      }
+      return res.status(200).json({ success: true, data: students })
+    }).catch(err => console.log(err))
+  }).catch(err => console.log(err))
+};
+
+deleteClassroom = async (req, res) => {
+    await Classroom.findOneAndDelete({ class_name: req.params.class_name, class_code:  req.params.class_code}, (err, classroom) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!classroom) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Classroom not found` })
+        }
+
+        return res.status(200).json({ success: true, data: classroom })
+    }).catch(err => console.log(err))
+}
+
 module.exports = {
   newClassroom,
-  getClassrooms
+  getClassrooms,
+  getClassroom,
+  getStudents,
+  deleteClassroom
 }

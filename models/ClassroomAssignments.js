@@ -2,9 +2,17 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Create Schema
-const AssignmentSchema = new Schema({
+const ClassroomAssignmentsSchema = new Schema({
   assignment_name: {
     type: String,
+    required: true
+  },
+  class_name: {
+    type: String,
+    required: true
+  },
+  due_date: {
+    type: Date,
     required: true
   },
   assignment_question: {
@@ -19,9 +27,6 @@ const AssignmentSchema = new Schema({
     type: String,
     required: true
   },
-  teacher_username: {
-    type: String
-  },
 
 });
-module.exports = Assignment = mongoose.model("assignments", AssignmentSchema);
+module.exports = ClassroomAssignments = mongoose.model("classroom_assignments", ClassroomAssignmentsSchema);

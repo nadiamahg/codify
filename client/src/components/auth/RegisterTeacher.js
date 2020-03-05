@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { registerUser } from "../../actions/authActions";
+import { registerTeacher } from "../../actions/authActions";
 import classnames from "classnames";
-class Register extends Component {
+class RegisterTeacher extends Component {
   constructor() {
     super();
     this.state = {
@@ -20,11 +20,11 @@ class Register extends Component {
   componentDidMount() {
     // If logged in and user navigates to Register page, should redirect them to dashboard
     if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
+      this.props.history.push("/dashboardTeacher");
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
         errors: nextProps.errors
@@ -32,12 +32,13 @@ class Register extends Component {
     }
   }
 
-onChange = e => {
-    this.setState({ [e.target.id]: e.target.value });
+  onChange = e => {
+      this.setState({ [e.target.id]: e.target.value });
   };
-onSubmit = e => {
+
+  onSubmit = e => {
     e.preventDefault();
-const newUser = {
+    const newUser = {
       first_name: this.state.first_name,
       surname: this.state.surname,
       username: this.state.username,
@@ -45,12 +46,12 @@ const newUser = {
       password2: this.state.password2
     };
 
-    this.props.registerUser(newUser, this.props.history); 
-};
+    this.props.registerTeacher(newUser, this.props.history); 
+  };
   
-render() {
+  render() {
     const { errors } = this.state;
-return (
+    return (
       <div className="container">
         <div className="row">
           <div className="col s8 offset-s2">
@@ -63,7 +64,7 @@ return (
                 <b>Register</b> below
               </h4>
               <p className="grey-text text-darken-1">
-                Already have an account? <Link to="/login">Log in</Link>
+                Already have an account? <Link to="/loginTeacher">Log in</Link>
               </p>
             </div>
             <form noValidate onSubmit={this.onSubmit}>
@@ -158,8 +159,8 @@ return (
     );
   }
 }
-Register.propTypes = {
-  registerUser: PropTypes.func.isRequired,
+RegisterTeacher.propTypes = {
+  registerTeacher: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
@@ -169,5 +170,5 @@ const mapStateToProps = state => ({
 });
 export default connect(
   mapStateToProps,
-  { registerUser }
-)(withRouter(Register));
+  { registerTeacher }
+)(withRouter(RegisterTeacher));

@@ -5,14 +5,22 @@ import setAuthToken from "./utils/setAuthToken";
 import { setCurrentUser, logoutUser} from "./actions/authActions";
 import { Provider } from "react-redux";
 import store from "./store";
+import "./App.css"
 
 import Navbar from "./components/layout/Navbar";
 import Landing from "./components/layout/Landing";
-import Register from "./components/auth/Register";
-import Login from "./components/auth/Login";
+import RegisterTeacher from "./components/auth/RegisterTeacher";
+import LoginTeacher from "./components/auth/LoginTeacher";
+import RegisterStudent from "./components/auth/RegisterStudent";
+import LoginStudent from "./components/auth/LoginStudent";
 import NewClassroom from "./components/classroom/NewClassroom";
+import NewAssignment from "./components/assignment/NewAssignment";
+import SetAssignment from "./components/assignment/SetAssignment";
+import StudentAssignment from "./components/assignment/StudentAssignment";
+import ViewAssignments from "./components/assignment/ViewAssignments";
 import PrivateRoute from "./components/private-route/PrivateRoute";
-import Dashboard from "./components/dashboard/Dashboard";
+import DashboardTeacher from "./components/dashboard/DashboardTeacher";
+import DashboardStudent from "./components/dashboard/DashboardStudent";
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -29,7 +37,7 @@ if (localStorage.jwtToken) {
     // Logout user
     store.dispatch(logoutUser());
     // Redirect to login
-    window.location.href = "./login";
+    window.location.href = "./loginTeacher";
   }
 }
 
@@ -41,11 +49,18 @@ class App extends Component {
           <div className="App">
             <Navbar />
             <Route exact path="/" component={Landing} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/login" component={Login} />
+            <Route exact path="/registerTeacher" component={RegisterTeacher} />
+            <Route exact path="/loginTeacher" component={LoginTeacher} />
+            <Route exact path="/registerStudent" component={RegisterStudent} />
+            <Route exact path="/loginStudent" component={LoginStudent} />
             <Switch>
-              <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              <PrivateRoute exact path="/dashboardTeacher" component={DashboardTeacher} />
+              <PrivateRoute exact path="/DashboardStudent" component={DashboardStudent} />
               <PrivateRoute exact path="/newClassroom" component={NewClassroom} />
+              <PrivateRoute exact path="/newAssignment" component={NewAssignment} />
+              <PrivateRoute exact path="/:class_name/assignments/setAssignment" component={SetAssignment} />
+              <PrivateRoute exact path="/:assignment_name/assignment" component={StudentAssignment} />
+              <PrivateRoute exact path="/:class_name/assignments" component={ViewAssignments} />
             </Switch>
           </div>
         </Router>

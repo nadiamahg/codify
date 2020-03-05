@@ -47,6 +47,22 @@ registerStudent = (req, res) => {
   });
 };
 
+getStudentClassName = async (req, res) => {
+  Student.findOne({ username: req.body.username }).then(student => {
+    if (!student) {
+      return res.status(400).json({ studentnotfound: "Student not found" });
+    } else {
+      Classroom.findOne({ class_code: student.class_code }).then(classroom => {
+        if (!classroom) {
+          return res.status(400).json({ classroomnotfound: "Classroom not found" });
+        } else {
+          return res.status(200).json({ success: true, data: classroom.class_name })
+        }
+      });
+    }
+  });
+};
+
 loginStudent = (req, res) => {
   // Form validation
   const { errors, isValid } = studentValidateLoginInput(req.body);
@@ -70,7 +86,8 @@ loginStudent = (req, res) => {
         const payload = {
           id: student.id,
           first_name: student.first_name,
-          surname: student.surname
+          surname: student.surname,
+          username: student.username,
         };
         // Sign token
         jwt.sign(
@@ -96,5 +113,6 @@ loginStudent = (req, res) => {
 
 module.exports = {
   registerStudent,
-  loginStudent
+  loginStudent,
+  getStudentClassName
 }

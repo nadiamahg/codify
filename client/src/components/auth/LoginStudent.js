@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { loginUser } from "../../actions/authActions";
+import { loginStudent } from "../../actions/authActions";
 import classnames from "classnames";
-class Login extends Component {
+class LoginStudent extends Component {
   constructor() {
     super();
     this.state = {
@@ -16,12 +16,12 @@ class Login extends Component {
   componentDidMount() {
     // If logged in and user navigates to Login page, should redirect them to dashboard
     if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
+      this.props.history.push("/dashboardStudent");
     }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth.isAuthenticated) {
-      this.props.history.push("/dashboard"); // push user to dashboard when they login
+      this.props.history.push("/dashboardStudent"); // push user to dashboard when they login
     }
     if (nextProps.errors) {
       this.setState({
@@ -38,7 +38,7 @@ class Login extends Component {
       username: this.state.username,
       password: this.state.password
     };
-    this.props.loginUser(userData); // since we handle the redirect within our component, we don't need to pass in this.props.history as a parameter
+    this.props.loginStudent(userData); // since we handle the redirect within our component, we don't need to pass in this.props.history as a parameter
   };
   render() {
     const { errors } = this.state;
@@ -55,7 +55,7 @@ class Login extends Component {
                 <b>Login</b> below
               </h4>
               <p className="grey-text text-darken-1">
-                Don't have an account? <Link to="/register">Register</Link>
+                Don't have an account? <Link to="/registerStudent">Register</Link>
               </p>
             </div>
             <form noValidate onSubmit={this.onSubmit}>
@@ -113,8 +113,8 @@ class Login extends Component {
     );
   }
 }
-Login.propTypes = {
-  loginUser: PropTypes.func.isRequired,
+LoginStudent.propTypes = {
+  loginStudent: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
@@ -124,5 +124,5 @@ const mapStateToProps = state => ({
 });
 export default connect(
   mapStateToProps,
-  { loginUser }
-)(Login);
+  { loginStudent }
+)(LoginStudent);

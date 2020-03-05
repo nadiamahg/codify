@@ -3,26 +3,31 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import { Link } from "react-router-dom";
-import { getClassrooms } from "../../api/classroomApi"
+import { getStudentAssignments } from "../../api/assignmentApi"
 
-class Dashboard extends Component {
+class DashboardStudent extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      classrooms: [],
+      assignments: [],
     }
   };
 
   componentDidMount = async () => {
     this.setState({ isLoading: true })
 
-    await getClassrooms(this.props.auth.user.username).then(classrooms => {
+    await getStudentAssignments(this.props.auth.user.username).then(assignments => {
       this.setState({
-        classrooms: classrooms.data.data
+        assignments: assignments.data.data
       })
     })
   };
+
+ viewAssignment = (assignment_name) => {
+    var route = '/' + assignment_name + '/assignment';
+    this.props.history.push(route);
+  }
 
   onLogoutClick = e => {
     e.preventDefault();
@@ -31,7 +36,7 @@ class Dashboard extends Component {
 
   render() {
     const { user } = this.props.auth;
-    const { classrooms } = this.state;
+    const { assignments } = this.state;
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
@@ -43,32 +48,38 @@ class Dashboard extends Component {
                 <span style={{ fontFamily: "monospace" }}>MERN</span> app 👏
               </p>
             </h4>
-            <div>
-            classnames:
+            <table className="striped">
+              <thead>
+                <tr>
+                  <th>Assignment Name</th>
+                  <th>Score</th>
+                  <th>Due Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
                 {
-                  classrooms.map((classroom, i) => {
+                  assignments.map((assignment, i) => {
                     return (
-                      <div key={i}>
-                        {classroom.class_name}
-
-                      </div>
+                      <tr key={i} onClick={this.viewAssignment.bind(this, assignment.assignment_name)}>
+                        <td>
+                          {assignment.assignment_name}
+                        </td>
+                        <td>
+                          {assignment.assignment_score}
+                        </td>
+                        <td>
+                          {assignment.assignment_due_date}
+                        </td>
+                        <td>
+                          {assignment.assignment_status}
+                        </td>
+                      </tr>
                     );
                   })
                 } 
-            </div>
-            <Link
-                to="/newClassroom"
-                style={{
-                  width: "150px",
-                  borderRadius: "3px",
-                  letterSpacing: "1.5px",
-                  marginTop: "1rem"
-                }}
-                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-              >
-                New Classroom
-              </Link>
-              
+              </tbody>
+            </table>
             
             <button
               style={{
@@ -91,7 +102,7 @@ class Dashboard extends Component {
     );
   }
 }
-Dashboard.propTypes = {
+DashboardStudent.propTypes = {
   logoutUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired
 };
@@ -100,4 +111,4 @@ const mapStateToProps = state => ({
 });
 export default connect(
   mapStateToProps, { logoutUser }
-)(Dashboard);
+)(DashboardStudent);
