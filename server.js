@@ -8,6 +8,7 @@ const teachers = require("./routes/api/teachers");
 const students = require("./routes/api/students");
 const classrooms = require("./routes/api/classrooms");
 const assignments = require("./routes/api/assignments");
+const path = require("path");
 
 const app = express();
 // Bodyparser middleware
@@ -39,6 +40,11 @@ app.use("/api/teachers", teachers);
 app.use("/api/students", students);
 app.use("/api/classrooms", classrooms);
 app.use("/api/assignments", assignments);
+
+app.use(express.static("client/build"));
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+});
 
 app.post('/', async (req, res) => {
   let { script, language, stdin } = req.body;
