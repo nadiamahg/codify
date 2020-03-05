@@ -27,7 +27,7 @@ class NewClassroom extends Component {
       teacher_username: this.props.auth.user.username
     };
     this.props.newClassroom(userData); // since we handle the redirect within our component, we don't need to pass in this.props.history as a parameter
-    this.props.history.push("/dashboard");
+    this.props.history.push("/dashboardTeacher");
   };
   render() {
     const { errors } = this.state;
@@ -35,7 +35,7 @@ class NewClassroom extends Component {
       <div className="container">
         <div style={{ marginTop: "4rem" }} className="row">
           <div className="col s8 offset-s2">
-            <Link to="/dashboard" className="btn-flat waves-effect">
+            <Link to="/dashboardTeacher" className="btn-flat waves-effect">
               <i className="material-icons left">keyboard_backspace</i> Back to
               home
             </Link>

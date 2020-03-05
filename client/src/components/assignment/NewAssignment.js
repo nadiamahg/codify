@@ -4,8 +4,16 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { newAssignment } from "../../api/assignmentApi";
 import classnames from "classnames";
+import CodeMirror from 'react-codemirror';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/mode/python/python';
+import 'codemirror/mode/clike/clike';
+import axios from 'axios';
+import Output from './Output';
+import "./Assignment.css"
 
 class NewAssignment extends Component {
+
   constructor() {
     super();
     this.state = {
@@ -13,36 +21,75 @@ class NewAssignment extends Component {
       assignment_question: "",
       assignment_solution: "",
       assignment_compiled_solution: "",
-      assignment_due_date: "",
       teacher_username: "",
+      name: 'CodeMirror',
+      result: '',
+      code: '',
+      language: 'python3',
+      output: false,
       errors: {}
-    };
+    }; 
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  onChange = e => {
+  updateCode(newCode) {
     this.setState({
-      [e.target.id]: e.target.value });
-  };
+      code: newCode
+    });
+  }
+
+  updateQuestion(newCode) {
+    this.setState({
+      assignment_question: newCode
+    });
+  }
+
+  getData(lang) {
+    this.setState({
+      language: lang
+    });
+  }
+  async handleSubmit(e) {
+    e.preventDefault();
+    let script = this.state.code;
+    let language = 'python3';
+    let stdin = '';
+
+    this.state.result = await axios.post('http://localhost:5000', {
+      script,
+      language,
+      stdin
+    });
+    this.setState({
+      output: true
+    });
+  }
+
   onSubmit = e => {
     e.preventDefault();
     const userData = {
       assignment_name: this.state.assignment_name,
       assignment_question: this.state.assignment_question,
-      assignment_solution: this.state.assignment_solution,
-      assignment_compiled_solution: this.state.assignment_compiled_solution,
-      assignment_due_date: this.state.assignment_due_date,
+      assignment_solution: this.state.code,
+      assignment_compiled_solution: this.state.result.data.body.output,
       teacher_username: this.props.auth.user.username
     };
     this.props.newAssignment(userData); // since we handle the redirect within our component, we don't need to pass in this.props.history as a parameter
-    this.props.history.push("/dashboard");
+    this.props.history.push("/dashboardTeacher");
   };
+
+  onChange = e => {
+    this.setState({
+      [e.target.id]: e.target.value });
+  };
+
   render() {
     const { errors } = this.state;
     return (
       <div className="container">
         <div style={{ marginTop: "4rem" }} className="row">
           <div className="col s8 offset-s2">
-            <Link to="/dashboard" className="btn-flat waves-effect">
+            <Link to="/dashboardTeacher" className="btn-flat waves-effect">
               <i className="material-icons left">keyboard_backspace</i> Back to
               home
             </Link>
@@ -50,25 +97,55 @@ class NewAssignment extends Component {
               <h4>
                 <b>Add Assignment</b> below
               </h4>
-            </div>
-            <form noValidate onSubmit={this.onSubmit}>
-              <div className="input-field col s12">
-                <input
-                  onChange={this.onChange}
-                  value={this.state.assignment_name}
-                  error={errors.assignment_name}
+              
+              <form onSubmit={this.handleSubmit}>
+                <div className="input-field col s12">
+                  <input
+                    onChange={this.onChange}
+                    value={this.state.assignment_name}
+                    error={errors.assignment_name}
+                    id="assignment_name"
+                    type="text"
+                    className={classnames("assignment_name", {
+                      invalid: errors.assignment_name || errors.classnamenotfound
+                    })}
+                  />
+                  <label htmlFor="assignment_name">assignment_name</label>
+                  <span className="red-text">
+                    {errors.classnamenotfound}
+                  </span>
+                  <CodeMirror
+                  value={'# Enter your question and template code here'}
                   id="assignment_name"
-                  type="text"
-                  className={classnames("", {
-                    invalid: errors.assignment_name || errors.classnamenotfound
-                  })}
+                  onChange={this.updateQuestion.bind(this)}
+                  options={{lineNumbers: true, mode: 'python'}}
+                  className="assignment_question"
                 />
-                <label htmlFor="assignment_name">Assignment Name</label>
-                <span className="red-text">
-                  {errors.classnamenotfound}
-                </span>
+                <br />
+                  <CodeMirror
+                  value={this.state.code}
+                  onChange={this.updateCode.bind(this)}
+                  options={{lineNumbers: true, mode: 'python'}}
+                  className="border"
+                />
+                <br />
+                <button className="btn btn-outline-primary">Run</button>
+                </div>
+                <br />
+                
+              </form>
+        
+              <div className="input-field col s12" id="output">
+              {this.state.output ? (
+                <>
+                  <hr /> 
+                  <Output result={this.state.result} />
+                </>
+              ) : <div> Click run to view compiled code </div>}
               </div>
-              <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+
+              <form noValidate onSubmit={this.onSubmit}>
+                <div className="input-field col s12" style={{ paddingLeft: "11.250px" }}>
                 <button
                   style={{
                     width: "150px",
@@ -82,7 +159,8 @@ class NewAssignment extends Component {
                   Add Assignment
                 </button>
               </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>

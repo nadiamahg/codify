@@ -3,45 +3,31 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import { Link } from "react-router-dom";
-import { getClassrooms, deleteClassroom } from "../../api/classroomApi"
+import { getStudentAssignments } from "../../api/assignmentApi"
 
-class DeleteClassroom extends Component {
-    deleteUser = event => {
-        event.preventDefault()
-
-        if (
-            window.confirm(
-                `Do you want to delete the class ${this.props.class_name} permanently?`,
-            )
-        ) {
-            deleteClassroom(this.props.class_name, this.props.class_code)
-            window.location.reload()
-        }
-    }
-
-    render() {
-        return <button onClick={this.deleteUser}>Delete</button>
-    }
-}
-
-class Dashboard extends Component {
+class DashboardStudent extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      classrooms: [],
+      assignments: [],
     }
   };
 
   componentDidMount = async () => {
     this.setState({ isLoading: true })
 
-    await getClassrooms(this.props.auth.user.username).then(classrooms => {
+    await getStudentAssignments(this.props.auth.user.username).then(assignments => {
       this.setState({
-        classrooms: classrooms.data.data
+        assignments: assignments.data.data
       })
     })
   };
+
+ viewAssignment = (assignment_name) => {
+    var route = '/' + assignment_name + '/assignment';
+    this.props.history.push(route);
+  }
 
   onLogoutClick = e => {
     e.preventDefault();
@@ -50,7 +36,7 @@ class Dashboard extends Component {
 
   render() {
     const { user } = this.props.auth;
-    const { classrooms } = this.state;
+    const { assignments } = this.state;
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
@@ -65,26 +51,28 @@ class Dashboard extends Component {
             <table className="striped">
               <thead>
                 <tr>
-                  <th>Class Name</th>
-                  <th>Class Code</th>
-                  <th>Delete</th>
+                  <th>Assignment Name</th>
+                  <th>Score</th>
+                  <th>Due Date</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {
-                  classrooms.map((classroom, i) => {
+                  assignments.map((assignment, i) => {
                     return (
-                      <tr key={i}>
+                      <tr key={i} onClick={this.viewAssignment.bind(this, assignment.assignment_name)}>
                         <td>
-                          {classroom.class_name}
+                          {assignment.assignment_name}
                         </td>
                         <td>
-                          {classroom.class_code}
+                          {assignment.assignment_score}
                         </td>
                         <td>
-
-                            <DeleteClassroom class_name={classroom.class_name} class_code={classroom.class_code}/>
-                        
+                          {assignment.assignment_due_date}
+                        </td>
+                        <td>
+                          {assignment.assignment_status}
                         </td>
                       </tr>
                     );
@@ -92,30 +80,6 @@ class Dashboard extends Component {
                 } 
               </tbody>
             </table>
-            <Link
-                to="/newClassroom"
-                style={{
-                  width: "150px",
-                  borderRadius: "3px",
-                  letterSpacing: "1.5px",
-                  marginTop: "1rem"
-                }}
-                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-              >
-                New Classroom
-              </Link>
-              <Link
-                to="/newAssignment"
-                style={{
-                  width: "150px",
-                  borderRadius: "3px",
-                  letterSpacing: "1.5px",
-                  marginTop: "1rem"
-                }}
-                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-              >
-                New Assignment
-              </Link>
             
             <button
               style={{
@@ -138,7 +102,7 @@ class Dashboard extends Component {
     );
   }
 }
-Dashboard.propTypes = {
+DashboardStudent.propTypes = {
   logoutUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired
 };
@@ -147,4 +111,4 @@ const mapStateToProps = state => ({
 });
 export default connect(
   mapStateToProps, { logoutUser }
-)(Dashboard);
+)(DashboardStudent);

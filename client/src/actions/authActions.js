@@ -7,10 +7,22 @@ import {
   USER_LOADING
 } from "./types";
 // Register User
-export const registerUser = (userData, history) => dispatch => {
+export const registerTeacher = (userData, history) => dispatch => {
   axios
     .post("/api/teachers/register", userData)
-    .then(res => history.push("/login")) // re-direct to login on successful register
+    .then(res => history.push("/loginTeacher")) // re-direct to login on successful register
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    );
+};
+
+export const registerStudent = (userData, history) => dispatch => {
+  axios
+    .post("/api/students/register", userData)
+    .then(res => history.push("/loginStudent")) // re-direct to login on successful register
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -20,9 +32,32 @@ export const registerUser = (userData, history) => dispatch => {
 };
 
 // Login - get user token
-export const loginUser = userData => dispatch => {
+export const loginTeacher = userData => dispatch => {
   axios
     .post("/api/teachers/login", userData)
+    .then(res => {
+      // Save to localStorage
+// Set token to localStorage
+      const { token } = res.data;
+      localStorage.setItem("jwtToken", token);
+      // Set token to Auth header
+      setAuthToken(token);
+      // Decode token to get user data
+      const decoded = jwt_decode(token);
+      // Set current user
+      dispatch(setCurrentUser(decoded));
+    })
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    );
+};
+
+export const loginStudent = userData => dispatch => {
+  axios
+    .post("/api/students/login", userData)
     .then(res => {
       // Save to localStorage
 // Set token to localStorage
