@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
-import { Link } from "react-router-dom";
 import { getStudentAssignments } from "../../api/assignmentApi"
 
 class DashboardStudent extends Component {
@@ -28,11 +27,6 @@ class DashboardStudent extends Component {
     var route = '/' + assignment_name + '/assignment';
     this.props.history.push(route);
   }
-
-  onLogoutClick = e => {
-    e.preventDefault();
-    this.props.logoutUser();
-  };
 
   render() {
     const { user } = this.props.auth;
@@ -80,19 +74,6 @@ class DashboardStudent extends Component {
                 } 
               </tbody>
             </table>
-            
-            <button
-              style={{
-                width: "150px",
-                borderRadius: "3px",
-                letterSpacing: "1.5px",
-                marginTop: "1rem"
-              }}
-              onClick={this.onLogoutClick}
-              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-            >
-            Log Out
-            </button>
           </div>
         </div>
       </div>

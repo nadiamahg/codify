@@ -6,6 +6,7 @@ import { getClassroomAssignments, getStudentAssignments } from "../../api/assign
 import { getStudents } from "../../api/classroomApi";
 import classnames from "classnames";
 import $ from 'jquery';
+import "./Assignment.css"
 
 
 
@@ -20,59 +21,48 @@ class ViewAssignments extends Component {
         scores: [],
         counter: 0,
         isLoading: true,
+        isLoading2: true,
+        isLoading3: true,
       }
     };
 
   componentWillMount = async () => {
     this.setState({ isLoading: true })
     const { params } = this.props.match
-    console.log("test1");
-    await getClassroomAssignments(params.class_name).then(assignments => {
-      console.log("test2");
-      this.setState({
-        assignments: assignments.data.data
-      })
-      console.log("test3");
-    })
 
     await getStudents(params.class_name).then(students => {
-      console.log("test4");
       this.setState({
         students: students.data.data
       })
-      console.log("test5");
+       this.setState({ isLoading3: false })
+    })
+
+    await getClassroomAssignments(params.class_name).then(assignments => {
+      this.setState({
+        assignments: assignments.data.data
+      })
+      this.setState({ isLoading2: false })
     })
 
     var scores = new Array(this.state.students.length);
     var y = 0;
     await this.state.students.forEach(async(student) => {
-      console.log("test6");
       await getStudentAssignments(student.username).then(assignments => {
-        console.log("test7");
         this.state.student_assignments[student.username] = assignments.data.data;
       })
-      console.log("test8");
       scores[y] = new Array(this.state.student_assignments[student.username].length);
       for(var i = 0; i < this.state.student_assignments[student.username].length; i ++) {
-        console.log("test9");
         scores[y][i] = this.state.student_assignments[student.username][i].assignment_score;
       } 
       y ++;
-      console.log("test10");
       this.setState({
         scores: scores
       })
 
       if(y == this.state.students.length) {
         this.setState({ isLoading: false })
-        console.log("test16")
       }
-      console.log("test12");
     })
-
-    
-    console.log("test11");
-
   };
 
   getAssignmentNames = function(){
@@ -82,13 +72,28 @@ class ViewAssignments extends Component {
   }
 
   getAssignmentScores = function(){
+      var x = [];
+      if(!this.state.scores[this.state.counter]) {
+        return null
+      } else {
+        for(var y = 0; y < this.state.scores[this.state.counter].length; y ++) {
+        x.push(<td>{this.state.scores[this.state.counter][y]}</td>)
+      }
+      this.state.counter = this.state.counter + 1
+      return (x);
+      }
+      
+  }
+
+  createCardContentAssessments = function() {
     var x = []
-    for(var y = 0; y < this.state.scores[this.state.counter].length; y ++) {
-      x.push(<td>{this.state.scores[this.state.counter][y]}</td>)
+    for(var y = 0; y < this.state.assignments.length; y ++) {
+      var date = new Date(this.state.assignments[y].due_date);
+      date = date.toLocaleDateString();
+      x.push(<div class="card--content center-align hoverable waves-effect waves-light">
+              <h6><b>{this.state.assignments[y].assignment_name}</b></h6><h6><b>Due Date: </b>{date}</h6></div>)
     }
-    this.state.counter = this.state.counter + 1
     return (x);
-     
   }
 
 
@@ -99,42 +104,31 @@ class ViewAssignments extends Component {
     const { students } = this.state;
     const { student_assignments } = this.state;
     const { scores } = this.state;
-    return (this.state.isLoading) ? <div>Loading</div> : (
+    return (
       <div className="container">
         <div style={{ marginTop: "4rem" }} className="row">
-          <div className="col s8 offset-s2">
+          <div className="col s12">
             <Link to="/dashboardTeacher" className="btn-flat waves-effect">
               <i className="material-icons left">keyboard_backspace</i> Back to
               home
             </Link>
-            <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+            <div className="col s12 center-align">
               <h4>
-                <b>View {params.class_name} Assignments</b> below
+                <b>Classroom:</b> {params.class_name}
               </h4>
-              <table className="striped">
-                <thead>
-                  <tr>
-                    <th>Assignment Name</th>
-                    <th>Due Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    assignments.map((assignment, i) => {
-                      return (
-                        <tr key={i}>
-                          <td>
-                            {assignment.assignment_name}
-                          </td>
-                          <td>
-                            {assignment.due_date}
-                          </td>
-                        </tr>
-                      );
-                    })
-                  } 
-                </tbody>
-              </table>
+            </div>
+            <div className="col s12">
+              <h4>
+                Assignments Set
+              </h4>
+            </div>
+            {this.state.isLoading2 ? <div> You have no assignments </div> : 
+            <div className="col s12"> <section class="card">
+                {this.createCardContentAssessments()}
+              </section>
+            </div>
+            }
+            <div className="col s12">
               <Link
                   to={'/' + params.class_name + '/assignments/setAssignment'}
                   style={{
@@ -148,20 +142,22 @@ class ViewAssignments extends Component {
                   Set Assignment
               </Link>
             </div>
-          </div>
+          </div> 
         </div>
         <div style={{ marginTop: "4rem" }} className="row">
-          <div className="col s8 offset-s2">
+          
             <div className="col s12" style={{ paddingLeft: "11.250px" }}>
               <h4>
-                <b>View {params.class_name} Students</b> below
+                Students
               </h4>
+              {this.state.isLoading3 || this.state.students.length == 0 ? <div> You have no students </div> : 
               <table className="striped">
                 <thead>
                   <tr>
                     <th>First Name</th>
                     <th>Surname</th>
-                    {this.getAssignmentNames()}
+                    {this.isLoading ? null : this.getAssignmentNames()}
+                    
                   </tr>
                 </thead>
                 <tbody>
@@ -175,16 +171,18 @@ class ViewAssignments extends Component {
                           <td>
                             {student.surname}
                           </td>
-                          {this.getAssignmentScores()}
+                          {this.state.isLoading ? null : this.getAssignmentScores()}
+                          
                         </tr>
                       );
                     })
                   } 
                 </tbody>
               </table>
+            }
             </div>
           </div>
-        </div>
+        
       </div>
     );
   }

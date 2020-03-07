@@ -1,5 +1,42 @@
 #output {
 	background-color: black;
     color: white;
-    height: 200px;
+    height: 248px;
+}
+
+.card {
+  display: flex;
+  min-width: 100%;
+  min-height: 200px;
+  overflow-x: auto;
+}
+.card::-webkit-scrollbar {
+  display: none;
+}
+.card--content {
+  background-color: #ecf0f1;
+  min-width: 200px;
+  margin: 5px;
+  padding: 5px;
+  color: #34495e
+}
+
+.testCard {
+  min-height: 100% !important;
+  overflow-y: auto;
+}
+.testCard::-webkit-scrollbar {
+  display: none;
+}
+.testCard--content {
+  background-color: #ecf0f1;
+  min-height: 50px;
+  margin: 5px;
+  padding: 5px;
+  color: #34495e;
+  width: 100%;
+}
+
+.CodeMirror {
+    background: #fafafa;
 }

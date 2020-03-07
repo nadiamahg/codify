@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { setAssignment, getAssignments } from "../../api/assignmentApi";
 import { getClassroom } from "../../api/classroomApi";
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
 import Materialize from 'materialize-css'
 
 class SetAssignment extends Component {
@@ -25,7 +23,6 @@ class SetAssignment extends Component {
   }
   componentDidMount = async () => {
       this.setState({ isLoading: true })
-      const { params } = this.props.match;
       var elems = document.querySelectorAll('.datepicker');
       this.state.date_instance = Materialize.Datepicker.init(elems, {format:'yyyy-mm-dd' });
 
@@ -62,7 +59,6 @@ class SetAssignment extends Component {
         assignment_student_compiled_solution: "",
         assignment_status: "not submitted",
         class_code: this.state.class_code,
-
       };
       this.props.setAssignment(userData);
       this.props.history.push("/dashboardTeacher");
@@ -70,7 +66,6 @@ class SetAssignment extends Component {
   
 
   render() {
-    const { errors } = this.state;
     const { params } = this.props.match;
     const { assignments } = this.state;
     return (

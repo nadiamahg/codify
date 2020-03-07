@@ -3,7 +3,11 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import { Link } from "react-router-dom";
-import { getClassrooms, deleteClassroom } from "../../api/classroomApi"
+import { getClassrooms, deleteClassroom } from "../../api/classroomApi";
+import { getAssignments} from "../../api/assignmentApi";
+import "./Dashboard.css";
+import M from "materialize-css";
+
 
 class DeleteClassroom extends Component {
     deleteUser = event => {
@@ -20,7 +24,7 @@ class DeleteClassroom extends Component {
     }
 
     render() {
-        return <button onClick={this.deleteUser}>Delete</button>
+        return <button className="btn-floating waves-effect waves-light hoverable red" style={{marginTop: "50px"}} onClick={this.deleteUser}><i className="material-icons">delete</i></button>
     }
 }
 
@@ -30,21 +34,60 @@ class DashboardTeacher extends Component {
     super(props)
     this.state = {
       classrooms: [],
+      assignments: [],
+      isLoading: true,
+      isLoading2: true,
     }
   };
 
   componentDidMount = async () => {
     this.setState({ isLoading: true })
+    this.setState({ isLoading2: true })
 
     await getClassrooms(this.props.auth.user.username).then(classrooms => {
       this.setState({
         classrooms: classrooms.data.data
       })
+      this.setState({ isLoading: false })
     })
+
+    await getAssignments(this.props.auth.user.username).then(assignments => {
+      this.setState({
+        assignments: assignments.data.data
+      })
+      this.setState({ isLoading2: false })
+    })
+
+    const options = {
+      onOpenStart: () => {
+        console.log("Open Start");
+      },
+      onOpenEnd: () => {
+        console.log("Open End");
+      },
+      onCloseStart: () => {
+        console.log("Close Start");
+      },
+      onCloseEnd: () => {
+        console.log("Close End");
+      },
+      inDuration: 250,
+      outDuration: 250,
+      opacity: 0.5,
+      dismissible: false,
+      startingTop: "4%",
+      endingTop: "10%"
+    };
+    M.Modal.init(this.Modal, options);
   };
 
  viewAssessments = (class_name) => {
     var route = '/' + class_name + '/assignments';
+    this.props.history.push(route);
+  }
+
+  viewAssignment = (assignment_name) => {
+    var route = '/' + assignment_name;
     this.props.history.push(route);
   }
 
@@ -53,89 +96,77 @@ class DashboardTeacher extends Component {
     this.props.logoutUser();
   };
 
+  createCardContent = function() {
+    var x = []
+    for(var y = 0; y < this.state.classrooms.length; y ++) {
+      x.push(<div className="card--content center-align hoverable waves-effect waves-light" key={y} onClick={this.viewAssessments.bind(this, this.state.classrooms[y].class_name)}>
+              <b><h6>{this.state.classrooms[y].class_name}</h6></b><b> Class Code: </b>{this.state.classrooms[y].class_code} <br/> <DeleteClassroom class_name={this.state.classrooms[y].class_name} class_code={this.state.classrooms[y].class_code}/></div>)
+    }
+    return (x);
+  }
+
+  createCardContentAssessments = function() {
+    var x = []
+    for(var y = 0; y < this.state.assignments.length; y ++) {
+      x.push(<div className="card--content center-align hoverable waves-effect waves-light" key={y} onClick={this.viewAssignment.bind(this, this.state.assignments[y].assignment_name)}>
+              <h6><b>{this.state.assignments[y].assignment_name}</b></h6></div>)
+    }
+    return (x);
+  }
+
   render() {
     const { user } = this.props.auth;
-    const { classrooms } = this.state;
     return (
-      <div style={{ height: "75vh" }} className="container valign-wrapper">
-        <div className="row">
-          <div className="col s12 center-align">
-            <h4>
+      <div className="container valign-wrapper">
+        <div className="row" style={{ marginTop: "4rem" }}>
+          <div className="col s12">
+            <h4 className="center-align">
               <b>Hey there,</b> {user.first_name} {user.surname}
-              <p className="flow-text grey-text text-darken-1">
-                You are logged into a full-stack{" "}
-                <span style={{ fontFamily: "monospace" }}>MERN</span> app 👏
-              </p>
             </h4>
-            <table className="striped">
-              <thead>
-                <tr>
-                  <th>Class Name</th>
-                  <th>Class Code</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  classrooms.map((classroom, i) => {
-                    return (
-                      <tr key={i} onClick={this.viewAssessments.bind(this, classroom.class_name)}>
-                        <td>
-                          {classroom.class_name}
-                        </td>
-                        <td>
-                          {classroom.class_code}
-                        </td>
-                        <td>
-
-                            <DeleteClassroom class_name={classroom.class_name} class_code={classroom.class_code}/>
-                        
-                        </td>
-                      </tr>
-                    );
-                  })
-                } 
-              </tbody>
-            </table>
-            <Link
-                to="/newClassroom"
-                style={{
-                  width: "150px",
-                  borderRadius: "3px",
-                  letterSpacing: "1.5px",
-                  marginTop: "1rem"
-                }}
-                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-              >
-                New Classroom
-              </Link>
-              <Link
-                to="/newAssignment"
-                style={{
-                  width: "150px",
-                  borderRadius: "3px",
-                  letterSpacing: "1.5px",
-                  marginTop: "1rem"
-                }}
-                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-              >
-                New Assignment
-              </Link>
-            
-            <button
-              style={{
-                width: "150px",
-                borderRadius: "3px",
-                letterSpacing: "1.5px",
-                marginTop: "1rem"
-              }}
-              onClick={this.onLogoutClick}
-              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-            >
-            Log Out
-            </button>
           </div>
-        </div>
+          <div className="col s12">
+            <br></br><h4>Classrooms</h4>
+          </div>
+            <div className="col s10">
+            {(this.state.isLoading) ? <div> Loading </div> :
+              <section className="card">
+                {this.createCardContent()}
+              </section>}
+            </div>
+            <div className="col s2">
+              <Link
+                  to="/newClassroom"
+                  style={{
+                    marginTop: "70px"
+                  }}
+                  className="btn-floating btn-large waves-effect waves-light hoverable blue accent-3"
+                >
+                  <i className="material-icons">add</i>
+                </Link>
+            </div>
+             <div className="col s12">
+            <br></br><h4>Assignments</h4>
+          </div>
+            <div className="col s10">
+            {(this.state.isLoading2) ? <div> Loading </div> :
+              <section className="card">
+                {this.createCardContentAssessments()}
+              </section>}
+            </div>
+            <div className="col s2">
+              <Link
+                  to="/newAssignment"
+                  style={{
+                    marginTop: "70px"
+                  }}
+                  className="btn-floating btn-large waves-effect waves-light hoverable blue accent-3"
+                >
+                  <i className="material-icons">add</i>
+                </Link>
+            </div>
+            
+          </div>
+        
       </div>
 
 

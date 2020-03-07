@@ -45,6 +45,7 @@ class StudentAssignment extends Component {
         assignment_solution: assignment.data.data.assignment_student_solution,
         assignment_student_compiled_solution: assignment.data.data.assignment_student_compiled_solution,
         assignment_teacher_compiled_solution: assignment.data.data.assignment_teacher_compiled_solution,
+        assignment_teacher_solution: assignment.data.data.assignment_teacher_solution,
         assignment_score: assignment.data.data.assignment_score,
         _id: assignment.data.data._id,
       })
@@ -106,7 +107,7 @@ class StudentAssignment extends Component {
 
   onTest = e => {
     e.preventDefault();
-    if(this.state.result.data.body.output == this.state.assignment_teacher_compiled_solution) {
+    if(this.state.result.data.body.output === this.state.assignment_teacher_compiled_solution) {
       this.setState({
         assignment_score: "100/100"
       });
@@ -124,9 +125,7 @@ class StudentAssignment extends Component {
   };
 
   render() {
-    const { errors } = this.state;
     const { params } = this.props.match;
-    var test = 'hi';
     return (
       <div className="container">
         {!this.state.assignment_solution ? "" :

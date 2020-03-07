@@ -4,7 +4,7 @@ import {
 } from "../actions/types";
 
 const classroomApi = axios.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL: 'http://localhost:5000/api',
 })
 
 export const newClassroom = (userData, history) => dispatch => {

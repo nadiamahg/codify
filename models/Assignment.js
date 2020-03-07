@@ -15,6 +15,9 @@ const AssignmentSchema = new Schema({
     type: String,
     required: true
   },
+  assignment_test_code: {
+    type: String,
+  },
   assignment_compiled_solution: {
     type: String,
     required: true
