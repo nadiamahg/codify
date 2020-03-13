@@ -27,11 +27,16 @@ class StudentAssignment extends Component {
       name: 'CodeMirror',
       result: '',
       code: '',
+      testCode: '',
       language: 'python3',
       output: false,
+      testOutput: false,
+      testResult: '',
+      testArr: [],
       errors: {}
     }; 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleTestSubmit = this.handleTestSubmit.bind(this);
   }
 
   componentDidMount = async () => {
@@ -47,6 +52,7 @@ class StudentAssignment extends Component {
         assignment_teacher_compiled_solution: assignment.data.data.assignment_teacher_compiled_solution,
         assignment_teacher_solution: assignment.data.data.assignment_teacher_solution,
         assignment_score: assignment.data.data.assignment_score,
+        testCode: assignment.data.data.assignment_test_code,
         _id: assignment.data.data._id,
       })
     })
@@ -62,6 +68,80 @@ class StudentAssignment extends Component {
     this.setState({
       language: lang
     });
+  }
+
+  getTestCases = function(){
+      var x = [];
+
+      var score = 0;
+
+
+
+      if(this.state.testArr.length === 0) {
+        if(this.state.result.data.body.output === this.state.assignment_teacher_compiled_solution) {
+          this.setState({
+            assignment_score: "100/100"
+          });
+        }
+        return null
+      } else {
+        var reg = /Test Passed(.)*/g
+        for(var y = 0; y < this.state.testArr.length; y ++) {
+            x.push(<div class="testCard--content waves-light">
+              <h6><b>   {this.state.testArr[y]}</b></h6></div>)
+            var str = this.state.testArr[y];
+            if(reg.test(str)) {
+              score = score + 1;
+            }
+        }
+
+        if(this.state.result.data.body.output === this.state.assignment_teacher_compiled_solution) {
+          score = score + 1;
+        }
+        console.log(score);
+
+        score = score/(this.state.testArr.length + 1) * 100
+        score = Math.round(score * 100) / 100
+        score = score +  "/100";
+        this.state.assignment_score = score;
+    
+        return (x);
+      }
+      
+  }
+
+  async handleTestSubmit(e) {
+    e.preventDefault();
+    let script = this.state.code + "\n" + this.state.testCode;
+    let language = 'python3';
+    let stdin = '';
+
+    this.state.testResult = await axios.post('http://localhost:5000', {
+      script,
+      language,
+      stdin
+    });
+    this.setState({
+      testOutput: true
+    });
+    if(this.state.testOutput) {
+      var res = this.state.testResult.data.body.output;
+      var reg = /Test Passed(.)*|Test Failed(.)*/g
+      var testArr = res.split("\n");
+      var newArr = [];
+     
+      for(var x = 0; x<testArr.length; x ++) {
+        var str = testArr[x];
+        if(str.match(reg)) {
+          newArr.push(str.match(reg))
+        }
+      }
+      this.setState({
+        testArr: newArr
+      });
+
+    }
+    
   }
 
   async handleSubmit(e) {
@@ -130,33 +210,35 @@ class StudentAssignment extends Component {
       <div className="container">
         {!this.state.assignment_solution ? "" :
         <div style={{ marginTop: "4rem" }} className="row">
-          <div className="col s8 offset-s2">
+          <div className="col s12">
             <Link to="/dashboardStudent" className="btn-flat waves-effect">
               <i className="material-icons left">keyboard_backspace</i> Back to
               home
             </Link>
-            <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+            <div className="col s12">
               <h4>
                 Complete <b>{params.assignment_name}</b> below
               </h4>
               <p>Score: {this.state.assignment_score}</p>
-              
+            </div>
+            <div className="input-field col s12">
               <form onSubmit={this.handleSubmit}>
-                <div className="input-field col s12">
+                <div className="input-field col s6">
                   <CodeMirror
                   value={this.state.assignment_solution}
                   onChange={this.updateCode.bind(this)}
                   options={{lineNumbers: true, mode: 'python'}}
                   className="border"
                 />
-                <br />
-                <button className="btn btn-outline-primary">Run</button>
-                </div>
-                <br />
+               
+              </div>
+                <button className="btn btn-outline-primary" style={{marginTop: "1rem"}}>Run</button>
+                
+                
                 
               </form>
         
-              <div className="input-field col s12" id="output">
+              <div className="input-field col s6" id="output">
               {this.state.output ? (
                 <>
                   <hr /> 
@@ -164,10 +246,11 @@ class StudentAssignment extends Component {
                 </>
               ) : <div> Click run to view compiled code </div>}
               </div>
+              </div>
 
-              <p>Score: {this.state.assignment_score}</p>
+              
 
-              <form noValidate onSubmit={this.onTest}>
+              <form noValidate onSubmit={this.handleTestSubmit}>
                 <div className="input-field col s12" style={{ paddingLeft: "11.250px" }}>
                 <button
                   style={{
@@ -182,6 +265,11 @@ class StudentAssignment extends Component {
                   Test Assignment
                 </button>
               </div>
+              <section class="testCard col s6">
+                      {!this.state.testOutput ? <div>Click run to run test cases</div> : this.getTestCases()}
+                      
+
+                    </section>
               </form>
 
               <form noValidate onSubmit={this.onSave}>
@@ -217,7 +305,7 @@ class StudentAssignment extends Component {
                 </button>
               </div>
               </form>
-            </div>
+           
           </div>
         </div>
       }

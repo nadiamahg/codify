@@ -109,17 +109,23 @@ class NewAssignment extends Component {
     });
     if(this.state.testOutput) {
       var res = this.state.testResult.data.body.output;
+      var reg = /Test Passed(.)*|Test Failed(.)*/g
       var testArr = res.split("\n");
-      testArr.pop();
-      var reg = /Test/g
+      var newArr = [];
+     
       for(var x = 0; x<testArr.length; x ++) {
-        if(!reg.test(testArr[x])) {
-          testArr.splice(x, 1);
+        var str = testArr[x];
+        if(str.match(reg)) {
+          newArr.push(str.match(reg))
         }
+        
+       
+        
       }
       this.setState({
-        testArr: testArr
+        testArr: newArr
       });
+
     }
     
   }
