@@ -1,51 +1,26 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import computer from "../../images/computer.png"
+import "./Landing.css"
 class Landing extends Component {
   render() {
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
-          <div className="col s12 center-align">
-            <div className="col s6">
-              <Link
-                to="/registerTeacher"
-                style={{
-                  width: "250px",
-                  borderRadius: "3px",
-                  letterSpacing: "1.5px"
-                }}
-                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-              >
-                Register Teacher
-              </Link>
-            </div>
-            <div className="col s6">
-              <Link
+          <div className="col s5 center-align main-button-positions">
+            <Link
                 to="/loginTeacher"
                 style={{
                   width: "250px",
                   borderRadius: "3px",
-                  letterSpacing: "1.5px"
-                }}
-                className="btn btn-large btn-flat waves-effect white black-text"
-              >
-                Log In Teacher
-              </Link>
-            </div>
-            <div className="col s6">
-              <Link
-                to="/registerStudent"
-                style={{
-                  width: "250px",
-                  borderRadius: "3px",
-                  letterSpacing: "1.5px"
+                  letterSpacing: "1.5px",
+                  marginBottom: "40px"
                 }}
                 className="btn btn-large waves-effect waves-light hoverable blue accent-3"
               >
-                Register Student
+                I am a <b>Teacher</b>
               </Link>
-            </div>
-            <div className="col s6">
+              <br></br>
               <Link
                 to="/loginStudent"
                 style={{
@@ -53,11 +28,13 @@ class Landing extends Component {
                   borderRadius: "3px",
                   letterSpacing: "1.5px"
                 }}
-                className="btn btn-large btn-flat waves-effect white black-text"
+                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
               >
-                Log In Student
+                 I am a <b>Student</b>
               </Link>
-            </div>
+          </div>
+          <div className="col s7">
+            <img class="responsive-img" src={computer} alt="Computer"/>
           </div>
         </div>
       </div>

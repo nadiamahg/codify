@@ -25,16 +25,28 @@ class NewAssignment extends Component {
       name: 'CodeMirror',
       result: '',
       code: '',
+      testCode: '',
       language: 'python3',
       output: false,
+      testOutput: false,
+      testResult: '',
+      testArr: [],
       errors: {}
     }; 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleTestSubmit = this.handleTestSubmit.bind(this);
   }
 
   updateCode(newCode) {
     this.setState({
       code: newCode
+    });
+  }
+
+
+  updateTestCode(newCode) {
+    this.setState({
+      testCode: newCode
     });
   }
 
@@ -49,6 +61,22 @@ class NewAssignment extends Component {
       language: lang
     });
   }
+
+  getTestCases = function(){
+      var x = [];
+      if(this.state.testArr.length === 0) {
+        return null
+      } else {
+        for(var y = 0; y < this.state.testArr.length; y ++) {
+            x.push(<div class="testCard--content waves-light">
+              <h6><b>   {this.state.testArr[y]}</b></h6></div>)
+        }
+    
+        return (x);
+      }
+      
+  }
+
   async handleSubmit(e) {
     e.preventDefault();
     let script = this.state.code;
@@ -65,6 +93,43 @@ class NewAssignment extends Component {
     });
   }
 
+  async handleTestSubmit(e) {
+    e.preventDefault();
+    let script = this.state.code + "\n" + this.state.testCode;
+    let language = 'python3';
+    let stdin = '';
+
+    this.state.testResult = await axios.post('http://localhost:5000', {
+      script,
+      language,
+      stdin
+    });
+    this.setState({
+      testOutput: true
+    });
+    if(this.state.testOutput) {
+      var res = this.state.testResult.data.body.output;
+      var reg = /Test Passed(.)*|Test Failed(.)*/g
+      var testArr = res.split("\n");
+      var newArr = [];
+     
+      for(var x = 0; x<testArr.length; x ++) {
+        var str = testArr[x];
+        if(str.match(reg)) {
+          newArr.push(str.match(reg))
+        }
+        
+       
+        
+      }
+      this.setState({
+        testArr: newArr
+      });
+
+    }
+    
+  }
+
   onSubmit = e => {
     e.preventDefault();
     const userData = {
@@ -72,7 +137,8 @@ class NewAssignment extends Component {
       assignment_question: this.state.assignment_question,
       assignment_solution: this.state.code,
       assignment_compiled_solution: this.state.result.data.body.output,
-      teacher_username: this.props.auth.user.username
+      teacher_username: this.props.auth.user.username,
+      assignment_test_code: this.state.testCode,
     };
     this.props.newAssignment(userData); // since we handle the redirect within our component, we don't need to pass in this.props.history as a parameter
     this.props.history.push("/dashboardTeacher");
@@ -88,17 +154,19 @@ class NewAssignment extends Component {
     return (
       <div className="container">
         <div style={{ marginTop: "4rem" }} className="row">
-          <div className="col s8 offset-s2">
+          <div className="col s12">
             <Link to="/dashboardTeacher" className="btn-flat waves-effect">
               <i className="material-icons left">keyboard_backspace</i> Back to
               home
             </Link>
             <div className="col s12" style={{ paddingLeft: "11.250px" }}>
               <h4>
-                <b>Add Assignment</b> below
+                <b>New Assignment</b>
               </h4>
+            </div>
+
               
-              <form onSubmit={this.handleSubmit}>
+              
                 <div className="input-field col s12">
                   <input
                     onChange={this.onChange}
@@ -110,10 +178,13 @@ class NewAssignment extends Component {
                       invalid: errors.assignment_name || errors.classnamenotfound
                     })}
                   />
-                  <label htmlFor="assignment_name">assignment_name</label>
+                  <label htmlFor="assignment_name">Assignment Name</label>
                   <span className="red-text">
                     {errors.classnamenotfound}
                   </span>
+                  <br></br>
+                  <h6 style={{ marginTop: "2rem" }}><b>Assignment Question & Template Code</b></h6>
+                  
                   <CodeMirror
                   value={'# Enter your question and template code here'}
                   id="assignment_name"
@@ -121,28 +192,57 @@ class NewAssignment extends Component {
                   options={{lineNumbers: true, mode: 'python'}}
                   className="assignment_question"
                 />
-                <br />
-                  <CodeMirror
-                  value={this.state.code}
-                  onChange={this.updateCode.bind(this)}
-                  options={{lineNumbers: true, mode: 'python'}}
-                  className="border"
-                />
-                <br />
-                <button className="btn btn-outline-primary">Run</button>
                 </div>
-                <br />
-                
-              </form>
-        
-              <div className="input-field col s12" id="output">
-              {this.state.output ? (
-                <>
-                  <hr /> 
-                  <Output result={this.state.result} />
-                </>
-              ) : <div> Click run to view compiled code </div>}
-              </div>
+
+                <div className="col s12">
+                  <h6 style={{ marginTop: "2rem" }}><b>Assignment Solution</b></h6>
+                  <form onSubmit={this.handleSubmit}>
+                    <div className="col s6">
+                      <CodeMirror
+                      value={this.state.code}
+                      onChange={this.updateCode.bind(this)}
+                      options={{lineNumbers: true, mode: 'python'}}
+                      className="border"
+                    />
+                    </div>
+                    <button className="btn btn-outline-primary">Run</button>
+                  </form>
+                  <div className="input-field col s6" id="output">
+                    {this.state.output ? (
+                      <>
+                        <hr /> 
+                        <Output result={this.state.result} />
+                      </>
+                    ) : <div> Click run to view compiled code </div>}
+                  </div>
+                 </div>
+
+                 <div className="col s12">
+                  <h6 style={{ marginTop: "2rem" }}><b>Assignment Test Cases</b></h6>
+                  <form onSubmit={this.handleTestSubmit}>
+                    <div className="col s6">
+                      <CodeMirror
+                      value={this.state.testCode}
+                      onChange={this.updateTestCode.bind(this)}
+                      options={{lineNumbers: true, mode: 'python'}}
+                      className="border"
+                    />
+                    </div>
+                    <button className="btn btn-outline-primary">Run</button>
+                  </form>
+                  
+
+                  <section class="testCard col s6">
+                      {!this.state.testOutput ? <div>Click run to run test cases</div> : this.getTestCases()}
+                      
+
+                    </section>
+
+                 </div>
+               
+             
+
+              
 
               <form noValidate onSubmit={this.onSubmit}>
                 <div className="input-field col s12" style={{ paddingLeft: "11.250px" }}>
@@ -161,7 +261,7 @@ class NewAssignment extends Component {
               </div>
               </form>
             </div>
-          </div>
+          
         </div>
       </div>
     );

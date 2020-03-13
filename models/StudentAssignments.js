@@ -27,7 +27,13 @@ const StudentAssignmentSchema = new Schema({
   assignment_teacher_question: {
     type: String,
   },
+  assignment_teacher_solution: {
+    type: String,
+  },
   assignment_teacher_compiled_solution: {
+    type: String,
+  },
+  assignment_test_code: {
     type: String,
   },
   assignment_due_date: {

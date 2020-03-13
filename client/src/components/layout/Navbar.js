@@ -10,30 +10,29 @@ class Navbar extends Component {
     super(props);
     this.state = {
       username: null,
+      isLoading: true,
     }
   };
 
-  componentDidMount() {
-    if (this.props.auth.isAuthenticated) {
-      this.setState({
-        username: this.props.auth.user.username
-      });
-    }
-  };
+  getUsername = function(){
+    return this.props.auth.user.username;
+  }
 
   onLogoutClick = e => {
     e.preventDefault();
+    this.setState({
+        username: null
+    });
     this.props.logoutUser();
   };
 
   render() {
-    const { user } = this.props.auth;
     return (
       <div className="navbar-fixed">
         <nav className="z-depth-0">
           <div className="nav-wrapper blue darken-3">
             <Link
-              to="/dashboardTeacher"
+              to="/"
               style={{
                 fontFamily: "monospace",
                 paddingLeft: "20px",
@@ -43,12 +42,19 @@ class Navbar extends Component {
               <i style={{paddingTop: "6px"}}><img src={logo} alt="Logo"/></i>
               CODIFY
             </Link>
-           {this.state.username ? <div class="right">{this.state.username} <button
-              onClick={this.onLogoutClick}
+           <div className="right">{this.getUsername()} {!this.getUsername() ? "" : 
+
+            <Link
+              to="/"
               className="btn btn-small waves-effect waves-light hoverable blue accent-3"
+              onClick={this.onLogoutClick}
             >
-            Log Out
-            </button></div> : null}
+              Log Out
+            </Link>
+
+
+           }
+           </div>
           </div>
         </nav>
       </div>

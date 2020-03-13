@@ -27,6 +27,9 @@ const ClassroomAssignmentsSchema = new Schema({
     type: String,
     required: true
   },
+  assignment_test_code: {
+    type: String,
+  },
 
 });
 module.exports = ClassroomAssignments = mongoose.model("classroom_assignments", ClassroomAssignmentsSchema);

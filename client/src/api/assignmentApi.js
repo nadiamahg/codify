@@ -43,5 +43,5 @@ export const submitAssignment = (userData, history) => dispatch => {
 export const getClassroomAssignments = class_name => assignmentApi.get(`assignments/getClassroomAssignments/${class_name}`);
 export const getStudentAssignments = student_username => assignmentApi.get(`assignments/getStudentAssignments/${student_username}`);
 export const getAssignments = teacher_username => assignmentApi.get(`assignments/getAssignments/${teacher_username}`);
-export const getAssignment = assignment_name => assignmentApi.get(`assignments/getAssignment`);
+export const getAssignment = assignment_name => assignmentApi.get(`assignments/getAssignment/${assignment_name}`);
 export const getStudentAssignment = assignment_name => assignmentApi.get(`assignments/getStudentAssignment/${assignment_name}`);

@@ -23,6 +23,7 @@ newAssignment = (req, res) => {
         assignment_question: req.body.assignment_question,
         assignment_solution: req.body.assignment_solution,
         assignment_compiled_solution: req.body.assignment_compiled_solution,
+        assignment_test_code: req.body.assignment_test_code,
         teacher_username: req.body.teacher_username,
       });
       newAssignment
@@ -63,6 +64,7 @@ setAssignment = (req, res) => {
         assignment_question: assignment.assignment_question,
         assignment_solution: assignment.assignment_solution,
         assignment_compiled_solution: assignment.assignment_compiled_solution,
+        assignment_test_code: assignment.assignment_test_code,
         class_name: req.body.class_name,
         due_date: req.body.due_date,
       };
@@ -80,6 +82,7 @@ setAssignment = (req, res) => {
               assignment_teacher_question: assignment.assignment_question,
               assignment_teacher_solution: assignment.assignment_solution,
               assignment_teacher_compiled_solution: assignment.assignment_compiled_solution,
+              assignment_test_code: assignment.assignment_test_code,
               assignment_due_date: req.body.due_date,
               assignment_score: "0/100",
               assignment_status: "not submitted",
@@ -141,7 +144,7 @@ getAssignments = async (req, res) => {
 };
 
 getAssignment = async (req, res) => {
-  await Assignment.findOne({ assignment_name: req.body.assignment_name }, (err, assignment) => {
+  await Assignment.findOne({ assignment_name: req.params.assignment_name }, (err, assignment) => {
     if (err) {
       return res.status(400).json({ success: false, error: err })
     }

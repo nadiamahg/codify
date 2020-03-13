@@ -18,6 +18,7 @@ import NewAssignment from "./components/assignment/NewAssignment";
 import SetAssignment from "./components/assignment/SetAssignment";
 import StudentAssignment from "./components/assignment/StudentAssignment";
 import ViewAssignments from "./components/assignment/ViewAssignments";
+import ViewAssignment from "./components/assignment/ViewAssignment";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import DashboardTeacher from "./components/dashboard/DashboardTeacher";
 import DashboardStudent from "./components/dashboard/DashboardStudent";
@@ -37,7 +38,7 @@ if (localStorage.jwtToken) {
     // Logout user
     store.dispatch(logoutUser());
     // Redirect to login
-    window.location.href = "./loginTeacher";
+    window.location.href = "./";
   }
 }
 
@@ -60,6 +61,7 @@ class App extends Component {
               <PrivateRoute exact path="/newAssignment" component={NewAssignment} />
               <PrivateRoute exact path="/:class_name/assignments/setAssignment" component={SetAssignment} />
               <PrivateRoute exact path="/:assignment_name/assignment" component={StudentAssignment} />
+              <PrivateRoute exact path="/:assignment_name" component={ViewAssignment} />
               <PrivateRoute exact path="/:class_name/assignments" component={ViewAssignments} />
             </Switch>
           </div>
