@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test suits for LoginStudent should match snapshot 1`] = `
+<div
+  className="container"
+>
+  <div
+    className="row"
+    style={
+      Object {
+        "marginTop": "4rem",
+      }
+    }
+  >
+    <div
+      className="col s8 offset-s2"
+    >
+      <div
+        className="col s12"
+        style={
+          Object {
+            "paddingLeft": "11.250px",
+          }
+        }
+      >
+        <h4>
+          <b>
+            Login
+          </b>
+           below
+        </h4>
+      </div>
+      <form
+        noValidate={true}
+        onSubmit={[Function]}
+      >
+        <div
+          className="input-field col s12"
+        >
+          <input
+            className=""
+            id="username"
+            onChange={[Function]}
+            type="text"
+          />
+          <label
+            htmlFor="username"
+          >
+            Username
+          </label>
+          <span
+            className="red-text"
+          />
+        </div>
+        <div
+          className="input-field col s12"
+        >
+          <input
+            className=""
+            id="password"
+            onChange={[Function]}
+            type="password"
+            value=""
+          />
+          <label
+            htmlFor="password"
+          >
+            Password
+          </label>
+          <span
+            className="red-text"
+          />
+        </div>
+        <div
+          className="col s12"
+          style={
+            Object {
+              "paddingLeft": "11.250px",
+            }
+          }
+        >
+          <button
+            className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+            style={
+              Object {
+                "borderRadius": "3px",
+                "letterSpacing": "1.5px",
+                "marginTop": "1rem",
+                "width": "150px",
+              }
+            }
+            type="submit"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;
