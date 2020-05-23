@@ -4,7 +4,7 @@ import {
 } from "../actions/types";
 
 const assignmentApi = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: 'http://ec2-3-8-215-33.eu-west-2.compute.amazonaws.com/api',
 })
 
 export const newAssignment = (userData, history) => dispatch => {
