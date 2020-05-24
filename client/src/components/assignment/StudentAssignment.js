@@ -116,7 +116,7 @@ class StudentAssignment extends Component {
     let language = 'python3';
     let stdin = '';
 
-    this.state.testResult = await axios.post('http://ec2-3-8-215-33.eu-west-2.compute.amazonaws.com:5000', {
+    this.state.testResult = await axios.post('http://ec2-3-8-215-33.eu-west-2.compute.amazonaws.com', {
       script,
       language,
       stdin
@@ -150,7 +150,7 @@ class StudentAssignment extends Component {
     let language = 'python3';
     let stdin = '';
 
-    this.state.result = await axios.post('http://ec2-3-8-215-33.eu-west-2.compute.amazonaws.com:5000', {
+    this.state.result = await axios.post('http://ec2-3-8-215-33.eu-west-2.compute.amazonaws.com', {
       script,
       language,
       stdin
