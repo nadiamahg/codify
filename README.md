@@ -12,7 +12,7 @@ Clone repository. You will need `node` and `npm` installed globally on your mach
 
 Installation:
 
-`npm install` in both the main and the client directory.
+Run `npm install` in both the main and the client directory.
 
 To Start Server:
 
