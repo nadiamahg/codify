@@ -20,17 +20,17 @@ To Visit App:
 
 ## Project Screen Shot(s)
 
-# Teacher Dashboard
+### Teacher Dashboard
 ![Teacher Dashboard](https://github.com/nadiamahg/codify/blob/master/Screenshots/Teacher%20Dashboard.png)
 
-# Teacher Create Assignment
+### Teacher Create Assignment
 ![Teacher Create Assignment](https://github.com/nadiamahg/codify/blob/master/Screenshots/Teacher%20Create%20New%20Assignment%20View.png)
 
-# Teacher Classroom View
+### Teacher Classroom View
 ![Teacher Classroom View](https://github.com/nadiamahg/codify/blob/master/Screenshots/Teacher%20Class%20View.png)
 
-# Student Dashboard
+### Student Dashboard
 ![Student Dashboard](https://github.com/nadiamahg/codify/blob/master/Screenshots/Student%20Dashboard.png)
 
-# Student Complete Assignment
+### Student Complete Assignment
 ![Student Complete Assignment](https://github.com/nadiamahg/codify/blob/master/Screenshots/Student%20Assignment%20View.png)
