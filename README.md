@@ -1,0 +1,23 @@
+## Codify
+
+Codify is an online platform for the distribution and automatic assessment of programming homework for secondary schools in England. Teachers can create programming homework and write test cases, assign it to a class, and view the progress of the students. Students can view the homework, write code, compile it, view passed test cases, and submit it to receive an instant score based on their code output and passed test cases.
+
+## Project Screen Shot(s)
+
+[ ADD SCREEN SHOTS HERE ]
+
+## Installation and Setup Instructions
+
+Clone repository. You will need `node` and `npm` installed globally on your machine.  
+
+Installation:
+
+Run `npm install` in both the main and the client directory.
+
+To Start Server:
+
+Run `npm run dev` in main directory
+
+To Visit App:
+
+`localhost:3000/`  
