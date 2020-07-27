@@ -4,15 +4,9 @@ Codify is an online platform for the distribution and automatic assessment of pr
 
 ## Project Screen Shot(s)
 
-#### Example:   
-
-[ PRETEND SCREEN SHOT IS HERE ]
-
-[ PRETEND OTHER SCREEN SHOT IS HERE ]
+[ ADD SCREEN SHOTS HERE ]
 
 ## Installation and Setup Instructions
-
-#### Example:  
 
 Clone repository. You will need `node` and `npm` installed globally on your machine.  
 
