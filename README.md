@@ -16,7 +16,7 @@ Run `npm install` in both the main and the client directory.
 
 To Start Server:
 
-`npm start`  
+Run `npm run dev` in main directory
 
 To Visit App:
 
